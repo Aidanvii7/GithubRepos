@@ -1,0 +1,58 @@
+apply plugin: 'com.android.feature'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+apply from: "${project.rootDir}/versions.gradle"
+
+android {
+    compileSdkVersion compile_sdk_version
+
+    baseFeature true
+
+    defaultConfig {
+        minSdkVersion min_sdk_version
+        targetSdkVersion target_sdk_version
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding.enabled = true
+}
+
+dependencies {
+    application project(':App')
+    api project(path: ':Core')
+
+    // Architecture components
+    //implementation "android.arch.paging:runtime:$android_arch_components_paging_version"
+
+    // Toolbox (source: https://github.com/Aidanvii7/Toolbox)
+    api "com.github.Aidanvii7.Toolbox:adapterviews-databinding-recyclerview:$toolbox_version"
+    api "com.github.Aidanvii7.Toolbox:delegates-coroutines-job:$toolbox_version"
+
+    // Databinding compiler
+    kapt "com.android.databinding:compiler:$android_gradle_version"
+
+    // testing
+    testImplementation "de.jodamob.android:SuperReflect:$superreflect_version"
+    testImplementation "junit:junit:$junit_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    testImplementation "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
+    testImplementation "org.amshove.kluent:kluent:$kluent_version"
+    testImplementation "de.jodamob.android:SuperReflect:$superreflect_version"
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
