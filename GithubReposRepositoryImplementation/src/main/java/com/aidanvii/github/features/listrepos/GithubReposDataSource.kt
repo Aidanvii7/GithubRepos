@@ -46,19 +46,6 @@ internal class GithubReposDataSource(
             }
         }.subscribeOn(ioScheduler)
 
-    private fun bla(id: Int): GithubRepoImpl {
-        return GithubRepoImpl(
-            id = id,
-            name = "HELLO WORLD",
-            stargazersCount = Int.MAX_VALUE,
-            language = "Kotlin",
-            owner = GithubRepoOwnerImpl(
-                name = "Aidanvii7",
-                avatarUrl = ""
-            )
-        )
-    }
-
     private suspend fun fetchPageWith(
         pageIndex: Int,
         pageSize: Int
