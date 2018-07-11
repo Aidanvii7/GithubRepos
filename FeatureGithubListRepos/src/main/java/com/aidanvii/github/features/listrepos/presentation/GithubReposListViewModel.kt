@@ -47,30 +47,14 @@ class GithubReposListViewModel(
 
     private var isRefreshingJob by cancelOnReassign(_isRefreshingJob)
 
-    private val areSame: (
-        oldItem: BindableAdapterItem,
-        newItem: BindableAdapterItem,
-        areGithubRepoAdapterItemsTheSame: (GithubRepoAdapterItem, GithubRepoAdapterItem) -> Boolean
-    ) -> Boolean = { oldItem, newItem, areGithubRepoAdapterItemsTheSame ->
-        when {
-            oldItem === newItem -> true
-            oldItem is GithubRepoAdapterItem && newItem is GithubRepoAdapterItem -> areGithubRepoAdapterItemsTheSame(oldItem, newItem)
-            else -> false
-        }
-    }
-
-    val binder = BindingRecyclerViewBinder<BindableAdapterItem>(
+    val binder = BindingRecyclerViewBinder<GithubRepoAdapterItem>(
         hasMultipleViewTypes = true,
         layoutManagerFactory = { LinearLayoutManager(it) },
-        areContentsTheSame = { oldItem, newItem ->
-            areSame(oldItem, newItem) { oldGithubRepoAdapterItem, newGithubRepoAdapterItem ->
-                oldGithubRepoAdapterItem.githubRepo == newGithubRepoAdapterItem.githubRepo
-            }
-        }
+        areContentsTheSame = { oldItem, newItem -> oldItem.githubRepo == newItem.githubRepo }
     )
 
     @get:Bindable
-    var githubRepoAdapterItems: List<BindableAdapterItem> by bindable(emptyList())
+    var githubRepoAdapterItems: List<GithubRepoAdapterItem> by bindable(emptyList())
         private set
 
     @get:Bindable
