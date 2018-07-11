@@ -4,7 +4,7 @@ import com.aidanvii.github.features.listrepos.entities.GithubRepo
 import com.aidanvii.github.features.listRepos.R
 import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 
-data class GithubRepoAdapterItem(
+internal data class GithubRepoAdapterItem(
     val githubRepo: GithubRepo?
 ) : BindableAdapterItem.Base() {
 

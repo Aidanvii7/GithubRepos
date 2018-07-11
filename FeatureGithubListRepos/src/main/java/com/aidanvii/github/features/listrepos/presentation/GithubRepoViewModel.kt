@@ -2,7 +2,7 @@ package com.aidanvii.github.features.listrepos.presentation
 
 import com.aidanvii.github.features.listrepos.entities.GithubRepo
 
-class GithubRepoViewModel(private val githubRepo: GithubRepo) {
+internal class GithubRepoViewModel(private val githubRepo: GithubRepo) {
     val name: String get() = githubRepo.name
     val stargazersCount: String get() = githubRepo.stargazersCount.toString()
     val language: String get() = githubRepo.language ?: ""

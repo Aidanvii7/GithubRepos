@@ -1,6 +1,5 @@
 package com.aidanvii.github.features.listrepos.presentation
 
-import android.arch.lifecycle.Lifecycle
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -11,10 +10,6 @@ import com.aidanvii.toolbox.arch.viewmodel.ViewModelFactory
 import com.aidanvii.toolbox.arch.viewmodel.addTypedFactory
 import com.aidanvii.github.utils.appAs
 import com.aidanvii.toolbox.arch.viewmodel.viewModelProvider
-import com.aidanvii.toolbox.delegates.observable.filterNotNull
-import com.aidanvii.toolbox.delegates.observable.lifecycle.doOnLifecycleEvent
-import com.aidanvii.toolbox.delegates.observable.lifecycle.doWhenAtLeast
-import com.aidanvii.toolbox.delegates.observable.observable
 
 class GithubReposListFragment : Fragment() {
 

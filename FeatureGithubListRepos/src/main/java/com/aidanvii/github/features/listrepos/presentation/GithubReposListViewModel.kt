@@ -4,7 +4,6 @@ import android.databinding.Bindable
 import android.support.v7.widget.LinearLayoutManager
 import com.aidanvii.github.features.listrepos.GithubReposRepository
 import com.aidanvii.github.utils.logger.logD
-import com.aidanvii.toolbox.adapterviews.databinding.BindableAdapterItem
 import com.aidanvii.toolbox.adapterviews.recyclerview.BindingRecyclerViewBinder
 import com.aidanvii.toolbox.arch.viewmodel.ViewModelFactory
 import com.aidanvii.toolbox.databinding.ObservableArchViewModel
@@ -17,7 +16,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlin.coroutines.experimental.CoroutineContext
 
-class GithubReposListViewModel(
+internal class GithubReposListViewModel(
     private val githubReposRepository: GithubReposRepository,
     private val uiContext: CoroutineContext = UI,
     private val workerContext: CoroutineContext = CommonPool
@@ -48,7 +47,6 @@ class GithubReposListViewModel(
     private var isRefreshingJob by cancelOnReassign(_isRefreshingJob)
 
     val binder = BindingRecyclerViewBinder<GithubRepoAdapterItem>(
-        hasMultipleViewTypes = true,
         layoutManagerFactory = { LinearLayoutManager(it) },
         areContentsTheSame = { oldItem, newItem -> oldItem.githubRepo == newItem.githubRepo }
     )
@@ -61,13 +59,9 @@ class GithubReposListViewModel(
     var showLoader: Boolean by bindable(false)
         private set
 
-    fun loadAround(index: Int) {
-        githubReposRepository.loadAround(index)
-    }
+    fun loadAround(index: Int) = githubReposRepository.loadAround(index)
 
-    fun refresh() {
-        githubReposRepository.refresh()
-    }
+    fun refresh() = githubReposRepository.refresh()
 
     override fun onCleared() {
         githubReposJob = null
