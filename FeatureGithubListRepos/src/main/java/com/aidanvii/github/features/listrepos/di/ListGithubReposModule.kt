@@ -7,7 +7,7 @@ import com.aidanvii.toolbox.Provider
 class ListGithubReposModule(
     private val githubReposRepositoryProvider: Provider<GithubReposRepository>
 ) {
-    val githubReposListViewModelFactory: GithubReposListViewModel.Factory by lazy {
+    internal val githubReposListViewModelFactory: GithubReposListViewModel.Factory by lazy {
         GithubReposListViewModel.Factory(githubReposRepositoryProvider())
     }
 }
