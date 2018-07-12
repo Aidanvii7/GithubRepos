@@ -12,7 +12,7 @@ abstract class ImageViewBindingAdapters {
         "imageUrl",
         "placeHolder", requireAll = false
     )
-    fun ImageView._bind(
+    fun ImageView.bind(
         imageUrl: String?,
         placeHolder: Drawable?
     ) {
