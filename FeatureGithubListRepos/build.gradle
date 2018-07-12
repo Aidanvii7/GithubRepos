@@ -1,6 +1,7 @@
 apply plugin: 'com.android.feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: "de.mannodermaus.android-junit5"
 
 apply from: "${project.rootDir}/versions.gradle"
 
@@ -43,6 +44,8 @@ dependencies {
     kapt "com.android.databinding:compiler:$android_gradle_version"
 
     // testing
+    testImplementation junit5.unitTests()
+    testCompileOnly junit5.unitTestsRuntime()
     testImplementation "de.jodamob.android:SuperReflect:$superreflect_version"
     testImplementation "junit:junit:$junit_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
