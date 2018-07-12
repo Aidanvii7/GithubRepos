@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "de.mannodermaus.android-junit5"
@@ -9,7 +9,7 @@ android {
     compileSdkVersion compile_sdk_version
 
     defaultConfig {
-        applicationId "com.aidanvii.github.app"
+
         minSdkVersion min_sdk_version
         targetSdkVersion target_sdk_version
         versionCode 1
@@ -22,31 +22,24 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    dataBinding.enabled = true
 }
 
 dependencies {
-    implementation project(':FeatureGithubListRepos')
-    implementation project(':FeatureGithubRepoDetail')
-    
-    //FIXME dexmerger error...
-    implementation project(path: ':GithubReposRepositoryImplementation')
+    // Kotlin stdlib etc
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlin_coroutines_version"
 
-    implementation("com.github.bumptech.glide:glide:$glide_version") {
-        exclude group: "com.android.support"
-    }
-
-    // Databinding
-    kapt "com.android.databinding:compiler:$android_gradle_version"
-
-    // testing
-    testImplementation junit5.unitTests()
-    testCompileOnly junit5.unitTestsRuntime()
-    testImplementation project(path: ':TestUtils')
+    api "de.jodamob.android:SuperReflect:$superreflect_version"
+    api "junit:junit:$junit_version"
+    api "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+    api "com.nhaarman:mockito-kotlin:$mockito_kotlin_version"
+    api "org.amshove.kluent:kluent:$kluent_version"
+    api "de.jodamob.android:SuperReflect:$superreflect_version"
 }
 repositories {
     mavenCentral()
 }
+
 kotlin {
     experimental {
         coroutines "enable"
