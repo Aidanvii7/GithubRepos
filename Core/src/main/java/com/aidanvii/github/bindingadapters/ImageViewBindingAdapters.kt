@@ -10,23 +10,17 @@ abstract class ImageViewBindingAdapters {
 
     @BindingAdapter(
         "imageUrl",
-        "placeHolder",
-        "widthOverride",
-        "heightOverride", requireAll = false
+        "placeHolder", requireAll = false
     )
     fun ImageView._bind(
         imageUrl: String?,
-        placeHolder: Drawable?,
-        widthOverride: Int,
-        heightOverride: Int
+        placeHolder: Drawable?
     ) {
         trackValue(
-            newValue = if (!(imageUrl.isNullOrEmpty())) {
+            newValue = if (imageUrl != null && imageUrl.isNotEmpty()) {
                 ImageBindingParams(
                     imageUrl = imageUrl,
-                    placeholder = placeHolder,
-                    widthOverride = widthOverride,
-                    heightOverride = heightOverride
+                    placeholder = placeHolder
                 )
             } else null,
             valueResId = R.id.image_binding_params,
@@ -43,9 +37,7 @@ abstract class ImageViewBindingAdapters {
     protected abstract fun ImageView.cancelPendingRequest()
 
     protected data class ImageBindingParams(
-        val imageUrl: String?,
-        val placeholder: Drawable?,
-        val widthOverride: Int,
-        val heightOverride: Int
+        val imageUrl: String,
+        val placeholder: Drawable?
     )
 }

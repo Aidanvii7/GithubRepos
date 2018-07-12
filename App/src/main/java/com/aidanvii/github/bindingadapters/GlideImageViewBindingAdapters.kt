@@ -23,12 +23,7 @@ class GlideImageViewBindingAdapters(
 
     override fun ImageView.loadImage(imageViewParams: ImageViewBindingAdapters.ImageBindingParams) {
         glideWith(context)
-            .run {
-                when {
-                    imageViewParams.imageUrl != null -> load(imageViewParams.imageUrl)
-                    else -> throw IllegalArgumentException("either imageUrl or resourceId must be provided")
-                }
-            }
+            .load(imageViewParams.imageUrl)
             .transition(withCrossFade())
             .applyOptionsFrom(imageViewParams)
             .into(this)
@@ -44,14 +39,6 @@ class GlideImageViewBindingAdapters(
                 requestOptions()
                     .placeholder(placeholder)
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .applySizeOverride(newParams)
             )
-        }
-
-    private fun RequestOptions.applySizeOverride(imageBindingParams: ImageBindingParams): RequestOptions =
-        imageBindingParams.run {
-            if (widthOverride > 0 && heightOverride > 0) {
-                override(widthOverride, heightOverride)
-            } else this@applySizeOverride
         }
 }
