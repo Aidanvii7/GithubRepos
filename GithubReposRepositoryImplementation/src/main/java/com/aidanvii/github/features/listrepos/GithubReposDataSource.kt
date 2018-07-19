@@ -19,7 +19,9 @@ import kotlin.math.min
 
 internal class GithubReposDataSource(
     private val githubReposApiService: GithubReposApiService,
-    private val ioScheduler: Scheduler
+    private val ioScheduler: Scheduler,
+    private val  maxRetries: Int = 2,
+    private val  delayBetweenRetriesMillis: Long = 5000
 ) : BaseDataSource<GithubRepo>() {
 
     override fun loadPage(
@@ -53,8 +55,7 @@ internal class GithubReposDataSource(
         getGithubReposPageWithRetry(
             pageIndex = pageIndex,
             pageSize = pageSize,
-            remainingRetries = 2,
-            delayBetweenRetriesMillis = 5000
+            remainingRetries = maxRetries
         ).let { githubReposPage ->
             // TODO try to remove limit of 500
             publishDataCount(min(githubReposPage.totalRepos, 500))
@@ -64,28 +65,22 @@ internal class GithubReposDataSource(
     private tailrec suspend fun getGithubReposPageWithRetry(
         pageIndex: Int,
         pageSize: Int,
-        @IntRange(from = 0) remainingRetries: Int,
-        delayBetweenRetriesMillis: Int
+        @IntRange(from = 0) remainingRetries: Int
     ): GithubReposPageImpl {
         var error: Throwable? = null
         try {
-            return runBlocking(coroutineContext) {
-                githubReposApiService.reposPageFor(pageIndex, pageSize).await()
-            }
+            return githubReposApiService.reposPageFor(pageIndex, pageSize).await()
         } catch (throwable: Throwable) {
             logE("getGithubReposPageWithRetry: error: $throwable")
             error = throwable
         }
 
-        return if (error != null && remainingRetries == 0) {
-            throw error
-        } else {
+        if (error != null && remainingRetries == 0) throw error else {
             delay(delayBetweenRetriesMillis)
-            getGithubReposPageWithRetry(
+            return getGithubReposPageWithRetry(
                 pageIndex = pageIndex,
                 pageSize = pageSize,
-                remainingRetries = remainingRetries - 1,
-                delayBetweenRetriesMillis = delayBetweenRetriesMillis
+                remainingRetries = remainingRetries - 1
             )
         }
     }
