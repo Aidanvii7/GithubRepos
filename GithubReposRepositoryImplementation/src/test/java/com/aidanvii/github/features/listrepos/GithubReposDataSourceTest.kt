@@ -1,44 +1,48 @@
 package com.aidanvii.github.features.listrepos
 
 import com.aidanvii.github.features.listrepos.entities.GithubRepo
-import com.aidanvii.github.features.listrepos.network.GithubReposApiService
+import com.aidanvii.github.features.listrepos.network.TestableGithubReposApiService
+import com.aidanvii.github.testutils.spied
 import com.aidanvii.toolbox.paging.PagedList
-import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
-import com.nhaarman.mockito_kotlin.whenever
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import org.amshove.kluent.mock
-import org.junit.jupiter.api.Assertions.*
+import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.io.IOException
 
 internal class GithubReposDataSourceTest {
 
-    val mockApiService = mock<GithubReposApiService>()
+    val maxRepos = 30
     val pageSize = 10
     val maxRetries = 5
+    val spiedApiService = TestableGithubReposApiService(maxRepos).spied()
 
     val tested = GithubReposDataSource(
-        githubReposApiService = mockApiService,
+        githubReposApiService = spiedApiService,
         ioScheduler = Schedulers.trampoline(),
         maxRetries = maxRetries,
         delayBetweenRetriesMillis = 0
     )
 
+    var latest = emptyList<GithubRepo?>()
+
     val pagedList = PagedList(
         dataSource = tested,
         pageSize = pageSize
-    )
+    ).apply {
+        observableList.subscribeBy { latest = it }
+    }
 
     @Nested
-    inner class `When api service will error once then succeed` {
+    inner class `When api service errors` {
 
         @BeforeEach
         fun before() {
-            whenever(mockApiService.reposPageFor(any(), any())).then { throw IOException() }
+            spiedApiService.errorCountdown = 10
         }
 
         @Nested
@@ -51,7 +55,40 @@ internal class GithubReposDataSourceTest {
 
             @Test
             fun `requests data from api service by given retry amount plus initial`() {
-                verify(mockApiService, times(maxRetries + 1)).reposPageFor(1, pageSize)
+                verify(spiedApiService, times(maxRetries + 1)).reposPageFor(1, pageSize)
+            }
+        }
+    }
+
+    @Nested
+    inner class `When api service succeeds` {
+
+        @BeforeEach
+        fun before() {
+            spiedApiService.errorCountdown = 0
+        }
+
+        @Nested
+        inner class `When page load requested` {
+
+            @BeforeEach
+            fun before() {
+                pagedList.loadAroundPage(1, growIfNecessary = true)
+            }
+
+            @Test
+            fun `requests data from api service once`() {
+                verify(spiedApiService).reposPageFor(1, pageSize)
+            }
+
+            @Test
+            fun `only requested page is populated`() {
+                for (index in 0..9) {
+                    pagedList.elementStateFor(index) `should equal` PagedList.ElementState.LOADED
+                }
+                for (index in 10 until maxRepos) {
+                    pagedList.elementStateFor(index) `should equal` PagedList.ElementState.EMPTY
+                }
             }
         }
     }
