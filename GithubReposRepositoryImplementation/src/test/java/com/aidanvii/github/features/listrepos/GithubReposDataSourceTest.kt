@@ -9,6 +9,7 @@ import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
+import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.`should equal`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -57,6 +58,18 @@ internal class GithubReposDataSourceTest {
             fun `requests data from api service by given retry amount plus initial`() {
                 verify(spiedApiService, times(maxRetries + 1)).reposPageFor(1, pageSize)
             }
+
+            @Test
+            fun `pageList grows only to match the pageSize`() {
+                pagedList.size `should be equal to` pageSize
+            }
+
+            @Test
+            fun `page is not populated`() {
+                for (index in 0 until pageSize) {
+                    pagedList.elementStateFor(index) `should equal` PagedList.ElementState.EMPTY
+                }
+            }
         }
     }
 
@@ -79,6 +92,11 @@ internal class GithubReposDataSourceTest {
             @Test
             fun `requests data from api service once`() {
                 verify(spiedApiService).reposPageFor(1, pageSize)
+            }
+
+            @Test
+            fun `pageList grows to match totalRepos count in response`() {
+                pagedList.size `should be equal to` maxRepos
             }
 
             @Test
