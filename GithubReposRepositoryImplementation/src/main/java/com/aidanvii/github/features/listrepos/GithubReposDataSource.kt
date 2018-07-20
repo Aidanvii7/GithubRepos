@@ -20,8 +20,8 @@ import kotlin.math.min
 internal class GithubReposDataSource(
     private val githubReposApiService: GithubReposApiService,
     private val ioScheduler: Scheduler,
-    private val  maxRetries: Int = 2,
-    private val  delayBetweenRetriesMillis: Long = 5000
+    private val  maxRetries: Int,
+    private val  delayBetweenRetriesMillis: Long
 ) : BaseDataSource<GithubRepo>() {
 
     override fun loadPage(

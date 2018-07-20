@@ -18,6 +18,11 @@ import kotlin.coroutines.experimental.CoroutineContext
 
 internal class GithubReposRepositoryImpl(
     githubReposApiService: GithubReposApiService,
+    pageSize: Int,
+    prefetchDistance: Int,
+    initialPagesToLoad: IntArray,
+    maxRetries: Int,
+    delayBetweenRetriesMillis: Long,
     ioScheduler: Scheduler = Schedulers.io(),
     private val launchContext: CoroutineContext = CommonPool
 ) : GithubReposRepository {
@@ -29,11 +34,13 @@ internal class GithubReposRepositoryImpl(
     private val pagedList = PagedList(
         dataSource = GithubReposDataSource(
             githubReposApiService = githubReposApiService,
-            ioScheduler = ioScheduler
+            ioScheduler = ioScheduler,
+            maxRetries = maxRetries,
+            delayBetweenRetriesMillis = delayBetweenRetriesMillis
         ),
-        pageSize = 30,
-        prefetchDistance = 5,
-        loadInitialPages = intArrayOf(1),
+        pageSize = pageSize,
+        prefetchDistance = prefetchDistance,
+        loadInitialPages = initialPagesToLoad,
         publishChangesOnInit = false
     )
 

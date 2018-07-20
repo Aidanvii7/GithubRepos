@@ -39,6 +39,7 @@ dependencies {
     // testing
     testImplementation junit5.unitTests()
     testCompileOnly junit5.unitTestsRuntime()
+    testImplementation junit5.parameterized()
     testImplementation project(path: ':TestUtils')
 }
 

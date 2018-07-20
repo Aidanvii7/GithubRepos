@@ -41,5 +41,12 @@ class GithubReposRepositoryModule : Provider<GithubReposRepository> {
         retrofit.create(GithubReposApiService::class.java)
     }
 
-    override fun invoke(): GithubReposRepository = GithubReposRepositoryImpl(githubReposApiService)
+    override fun invoke(): GithubReposRepository = GithubReposRepositoryImpl(
+        githubReposApiService = githubReposApiService,
+        pageSize = 30,
+        prefetchDistance = 5,
+        initialPagesToLoad = intArrayOf(1),
+        maxRetries = 2,
+        delayBetweenRetriesMillis = 5000
+    )
 }
