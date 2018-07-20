@@ -1,7 +1,7 @@
 package com.aidanvii.github.features.listrepos
 
 import com.aidanvii.github.features.listrepos.entities.GithubRepo
-import com.aidanvii.github.features.listrepos.network.TestableGithubReposApiService
+import com.aidanvii.github.features.listrepos.network.StubGithubReposApiService
 import com.aidanvii.github.testutils.spied
 import com.nhaarman.mockito_kotlin.reset
 import com.nhaarman.mockito_kotlin.verify
@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
-import java.util.*
 
 internal class GithubReposRepositoryImplTest {
 
@@ -28,7 +27,7 @@ internal class GithubReposRepositoryImplTest {
     val prefetchDistance = 3
     val initialPagesToLoad = intArrayOf(1)
 
-    val spiedApiService = TestableGithubReposApiService(maxRepos).spied()
+    val spiedApiService = StubGithubReposApiService(maxRepos).spied()
     val testScheduler = TestScheduler()
 
     var githubRepos = emptyList<GithubRepo?>()

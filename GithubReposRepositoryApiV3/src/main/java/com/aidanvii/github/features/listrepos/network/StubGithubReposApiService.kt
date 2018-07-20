@@ -7,7 +7,8 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.Unconfined
 import kotlinx.coroutines.experimental.async
 
-internal class TestableGithubReposApiService(
+// TODO move to a GithubReposrepositoryV3-test module?
+internal class StubGithubReposApiService(
     val totalRepos: Int
 ) : GithubReposApiService {
 

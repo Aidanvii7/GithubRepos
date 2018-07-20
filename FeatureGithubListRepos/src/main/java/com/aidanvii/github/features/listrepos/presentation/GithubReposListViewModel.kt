@@ -15,9 +15,24 @@ import kotlin.coroutines.experimental.CoroutineContext
 
 internal class GithubReposListViewModel(
     private val githubReposRepository: GithubReposRepository,
-    private val uiContext: CoroutineContext = UI,
-    private val workerContext: CoroutineContext = CommonPool
+    uiContext: CoroutineContext = UI,
+    workerContext: CoroutineContext = CommonPool
 ) : ObservableArchViewModel() {
+
+    @get:Bindable
+    var showLoader: Boolean by bindable(false)
+        private set
+
+    @get:Bindable
+    var githubRepoAdapterItems: List<GithubRepoAdapterItem> by bindable(emptyList())
+        private set
+
+    val binder = BindingRecyclerViewBinder<GithubRepoAdapterItem>(
+        layoutManagerFactory = { LinearLayoutManager(it) },
+        areContentsTheSame = { oldItem, newItem -> oldItem.githubRepo == newItem.githubRepo },
+        uiContext = uiContext,
+        workerContext = workerContext
+    )
 
     private val githubReposJob = async(workerContext) {
         for (githubRepos in githubReposRepository.githubRepos) {
@@ -32,19 +47,6 @@ internal class GithubReposListViewModel(
             launch(uiContext) { showLoader = isRefreshing }
         }
     }
-
-    val binder = BindingRecyclerViewBinder<GithubRepoAdapterItem>(
-        layoutManagerFactory = { LinearLayoutManager(it) },
-        areContentsTheSame = { oldItem, newItem -> oldItem.githubRepo == newItem.githubRepo }
-    )
-
-    @get:Bindable
-    var githubRepoAdapterItems: List<GithubRepoAdapterItem> by bindable(emptyList())
-        private set
-
-    @get:Bindable
-    var showLoader: Boolean by bindable(false)
-        private set
 
     fun loadAround(index: Int) = githubReposRepository.loadAround(index)
 

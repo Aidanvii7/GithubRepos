@@ -1,10 +1,9 @@
 package com.aidanvii.github.features.listrepos
 
 import com.aidanvii.github.features.listrepos.entities.GithubRepo
-import com.aidanvii.github.features.listrepos.network.TestableGithubReposApiService
+import com.aidanvii.github.features.listrepos.network.StubGithubReposApiService
 import com.aidanvii.github.testutils.spied
 import com.aidanvii.toolbox.paging.PagedList
-import com.nhaarman.mockito_kotlin.spy
 import com.nhaarman.mockito_kotlin.times
 import com.nhaarman.mockito_kotlin.verify
 import io.reactivex.rxkotlin.subscribeBy
@@ -20,7 +19,7 @@ internal class GithubReposDataSourceTest {
     val maxRepos = 30
     val pageSize = 10
     val maxRetries = 5
-    val spiedApiService = TestableGithubReposApiService(maxRepos).spied()
+    val spiedApiService = StubGithubReposApiService(maxRepos).spied()
 
     val tested = GithubReposDataSource(
         githubReposApiService = spiedApiService,

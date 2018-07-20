@@ -30,7 +30,7 @@ dependencies {
     implementation project(':FeatureGithubRepoDetail')
     
     //FIXME dexmerger error...
-    implementation project(path: ':GithubReposRepositoryImplementation')
+    implementation project(path: ':GithubReposRepositoryApiV3')
 
     implementation("com.github.bumptech.glide:glide:$glide_version") {
         exclude group: "com.android.support"

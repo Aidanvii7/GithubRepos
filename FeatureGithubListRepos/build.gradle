@@ -48,6 +48,7 @@ dependencies {
     testCompileOnly junit5.unitTestsRuntime()
     testImplementation junit5.parameterized()
     testImplementation project(path: ':TestUtils')
+    testImplementation project(path: ':GithubReposRepositoryApiV3')
 }
 
 kotlin {
